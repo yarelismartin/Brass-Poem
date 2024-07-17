@@ -6,7 +6,7 @@ namespace BrassAndPoem
         public string Name { get; set; }
 
         public decimal Price { get; set; }
-        ProductType ProductTypeId { get; set; }
+        public ProductType ProductTypeId { get; set; }
         public Product(string name, decimal price, ProductType productTypeId)
         {
             Name = name;
