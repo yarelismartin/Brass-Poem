@@ -86,70 +86,75 @@ void DeleteProduct(List<Product> products, List<ProductType> productTypes)
 {
     Console.WriteLine("Enter the number of the product you would like to delete. ");
     DisplayAllProducts(products, productTypes);
-while(true)
-    {
-        if(int.TryParse(Console.ReadLine(), out int productIndex) && productIndex >= 1 && productIndex <= products.Count)
+    while(true)
         {
-            Console.WriteLine($"{products[productIndex -1]} has been deleted");
-            products.RemoveAt(productIndex -1);
-            break;
+            if(int.TryParse(Console.ReadLine(), out int productIndex) && productIndex >= 1 && productIndex <= products.Count)
+            {
+                Console.WriteLine($"{products[productIndex -1]} has been deleted");
+                products.RemoveAt(productIndex -1);
+                break;
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a numbber within range. ");
+            }
         }
-        else
-        {
-            Console.WriteLine("Invalid input. Please enter a numbber within range. ");
-        }
-    }
 }
 
 void AddProduct(List<Product> products, List<ProductType> productTypes)
 {
     Console.WriteLine("Let's start by choosing a product type?");
-    DisplayAllProductTypes();
+    ProductType selectedProductType = CreateAndUpdateProductType();
 
-    ProductType selectedProductType;
-    while (true)
-    {
-        if(int.TryParse(Console.ReadLine(), out int productTypeIndex) && productTypeIndex >=1 && productTypeIndex <= productTypes.Count)
-        {
-            selectedProductType = productTypes[productTypeIndex -1];
-            break;
-        }
-        else
-        {
-            Console.WriteLine("Invalid input please eneter a number within range. ");
-        }
-    }
 
     Console.WriteLine("What is the name of this product?");
-    string selectedProductName;
-    while (true)
+    string selectedProductName = CreateAndUpdateProductName();
+
+    Console.WriteLine("What is the price of this product.");
+    decimal selectedPrice = CreateAndUpdateProductPrice();
+
+    Product newProduct = new Product(selectedProductName, selectedPrice, selectedProductType);
+    products.Add(newProduct);
+}
+
+void UpdateProduct(List<Product> products, List<ProductType> productTypes)
+{
+    DisplayAllProducts(products, productTypes);
+    Console.WriteLine("Enter the number of the product you would like to update. ");
+
+    while(true)
     {
-        selectedProductName = Console.ReadLine();
-        if(!string.IsNullOrWhiteSpace(selectedProductName) && !selectedProductName.Any(char.IsDigit))
+        if (int.TryParse(Console.ReadLine(), out int IndexOfProduct) && IndexOfProduct >= 1 && IndexOfProduct <= products.Count)
         {
+            Product selectedProduct = products[IndexOfProduct - 1];
+
+
+            Console.WriteLine($"The current product name is: {selectedProduct.Name}");
+            Console.WriteLine("Enter the new product name. ");
+            selectedProduct.Name = CreateAndUpdateProductName();
+
+
+            Console.WriteLine($"The current price is ${selectedProduct.Price}");
+            Console.WriteLine("What would you like the new price to be?");
+            selectedProduct.Price = CreateAndUpdateProductPrice();
+
+            Console.WriteLine($"The current Product Type is: {selectedProduct.ProductTypeId.Title}");
+            Console.WriteLine("What would you like the new product type to be?");
+            selectedProduct.ProductTypeId = CreateAndUpdateProductType();
+
+
+            Console.WriteLine("Your product has be updated.");
             break;
         }
-        else
+        else 
         {
-            Console.WriteLine("Invalid Input please only eneter names. ");
+            Console.WriteLine("Invalid input. Please enter a number within range of avilable products.");
+
         }
     }
 
-    Console.WriteLine("What is the price of this product.");
-    decimal selectedPrice;
-    while (true)
-    {
-        if (decimal.TryParse(Console.ReadLine(), out selectedPrice))
-        {
-            Product newProduct = new Product(selectedProductName, selectedPrice, selectedProductType);
-            products.Add(newProduct);
-            break;
-        }
-        else
-        {
-            Console.WriteLine("This is not a valid input.");
-        }
-    }
+
+
 }
 
 string CreateAndUpdateProductName()
@@ -170,84 +175,42 @@ string CreateAndUpdateProductName()
     return productName;
 }
 
-
-
-
-void UpdateProduct(List<Product> products, List<ProductType> productTypes)
+decimal CreateAndUpdateProductPrice()
 {
-    DisplayAllProducts(products, productTypes);
-    Console.WriteLine("Enter the number of the product you would like to update. ");
-
-    while(true)
+    decimal productPrice;
+    while (true)
     {
-        if (int.TryParse(Console.ReadLine(), out int IndexOfProduct) && IndexOfProduct >= 1 && IndexOfProduct <= products.Count)
+        if (decimal.TryParse(Console.ReadLine(), out productPrice))
         {
-            Product selectedProduct = products[IndexOfProduct - 1];
-            Console.WriteLine($"The current product name is: {selectedProduct.Name}");
-            Console.WriteLine("Enter the new product name. ");
-
-            selectedProduct.Name = CreateAndUpdateProductName();
-
-         //   while (true)
-          //  {
-            //    string newName = Console.ReadLine();
-             //   if(!string.IsNullOrWhiteSpace(newName) && !newName.Any(char.IsDigit))
-             //   {
-              //      selectedProduct.Name = newName;
-             //       break;
-              //  }
-              //  else
-            //    {
-           //         Console.WriteLine( "This is not a valid input please enter a name.");
-           //     }
-        
-          //  }
-
-            Console.WriteLine($"The current price is ${selectedProduct.Price}");
-            Console.WriteLine("What would you like the new price to be?");
-
-            while (true)
-            {
-                if (decimal.TryParse(Console.ReadLine(), out decimal newPrice))
-                {
-                    selectedProduct.Price = newPrice;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid Input please enter a Number");
-                }
-            }
-
-            Console.WriteLine($"The current Product Type is: {selectedProduct.ProductTypeId.Title}");
-            Console.WriteLine("What would you like the new product type to be?");
-            while (true)
-            {
-                DisplayAllProductTypes();
-                if (int.TryParse(Console.ReadLine(), out int newProductTypeIndex) && newProductTypeIndex >= 1 && newProductTypeIndex <= productTypes.Count)
-                {
-                    ProductType selectedProductType = productTypes[newProductTypeIndex - 1];
-                    selectedProduct.ProductTypeId = selectedProductType;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid input. Please enter a number within range of avilable product types.");
-                }
-            }
-            Console.WriteLine("Your product has be updated.");
             break;
         }
-        else 
+        else
         {
-            Console.WriteLine("Invalid input. Please enter a number within range of avilable products.");
-
+            Console.WriteLine("This is not a valid input.");
         }
     }
-
-
-
+    return productPrice;
 }
+
+ProductType CreateAndUpdateProductType()
+{
+    ProductType productsProductType;
+    DisplayAllProductTypes();
+    while (true)
+    {
+        if (int.TryParse(Console.ReadLine(), out int newProductTypeIndex) && newProductTypeIndex >= 1 && newProductTypeIndex <= productTypes.Count)
+        {
+            productsProductType = productTypes[newProductTypeIndex - 1];
+            break;
+        }
+        else
+        {
+            Console.WriteLine("Invalid input. Please enter a number within range of avilable product types.");
+        }
+    }
+    return productsProductType;
+}
+
 
 
 
