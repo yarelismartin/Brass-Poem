@@ -104,14 +104,14 @@ void DeleteProduct(List<Product> products, List<ProductType> productTypes)
 void AddProduct(List<Product> products, List<ProductType> productTypes)
 {
     Console.WriteLine("Let's start by choosing a product type?");
-    ProductType selectedProductType = CreateAndUpdateProductType();
+    ProductType selectedProductType = CreateProductType();
 
 
     Console.WriteLine("What is the name of this product?");
-    string selectedProductName = CreateAndUpdateProductName();
+    string selectedProductName = CreateProductName();
 
     Console.WriteLine("What is the price of this product.");
-    decimal selectedPrice = CreateAndUpdateProductPrice();
+    decimal selectedPrice = CreateProductPrice();
 
     Product newProduct = new Product(selectedProductName, selectedPrice, selectedProductType);
     products.Add(newProduct);
@@ -131,16 +131,69 @@ void UpdateProduct(List<Product> products, List<ProductType> productTypes)
 
             Console.WriteLine($"The current product name is: {selectedProduct.Name}");
             Console.WriteLine("Enter the new product name. ");
-            selectedProduct.Name = CreateAndUpdateProductName();
+
+            while (true)
+            {
+
+                string productName = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(productName))
+                {
+                    break;  // Keep the current name if Enter is pressed without input
+                }
+                else if (!productName.Any(char.IsDigit))
+                {
+                    selectedProduct.Name = productName;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid Input please only eneter names. ");
+                }
+            }
 
 
             Console.WriteLine($"The current price is ${selectedProduct.Price}");
             Console.WriteLine("What would you like the new price to be?");
-            selectedProduct.Price = CreateAndUpdateProductPrice();
+
+            while (true)
+            {
+                string newPriceInput = Console.ReadLine();
+                if (decimal.TryParse(newPriceInput, out decimal newPrice) && newPrice >= 0)
+                {
+                    selectedProduct.Price = newPrice;
+                    break;
+                }
+                else if(string.IsNullOrWhiteSpace(newPriceInput))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("This is not a valid input.");
+                }
+            }
 
             Console.WriteLine($"The current Product Type is: {selectedProduct.ProductTypeId.Title}");
             Console.WriteLine("What would you like the new product type to be?");
-            selectedProduct.ProductTypeId = CreateAndUpdateProductType();
+
+            DisplayAllProductTypes();
+            while (true)
+            {
+                string newTypeInput = Console.ReadLine();
+                if (int.TryParse(newTypeInput, out int newProductTypeIndex) && newProductTypeIndex >= 1 && newProductTypeIndex <= productTypes.Count)
+                {
+                    selectedProduct.ProductTypeId = productTypes[newProductTypeIndex - 1];
+                    break;
+                }
+                else if (string.IsNullOrWhiteSpace(newTypeInput))
+                {
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input. Please enter a number within range of avilable product types.");
+                }
+            }
 
 
             Console.WriteLine("Your product has be updated.");
@@ -157,7 +210,7 @@ void UpdateProduct(List<Product> products, List<ProductType> productTypes)
 
 }
 
-string CreateAndUpdateProductName()
+string CreateProductName()
 {
     string productName;
     while (true)
@@ -175,7 +228,7 @@ string CreateAndUpdateProductName()
     return productName;
 }
 
-decimal CreateAndUpdateProductPrice()
+decimal CreateProductPrice()
 {
     decimal productPrice;
     while (true)
@@ -192,7 +245,7 @@ decimal CreateAndUpdateProductPrice()
     return productPrice;
 }
 
-ProductType CreateAndUpdateProductType()
+ProductType CreateProductType()
 {
     ProductType productsProductType;
     DisplayAllProductTypes();
@@ -210,7 +263,6 @@ ProductType CreateAndUpdateProductType()
     }
     return productsProductType;
 }
-
 
 
 
